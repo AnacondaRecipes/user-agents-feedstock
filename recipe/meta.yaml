@@ -1,22 +1,24 @@
+{% set name = "user-agents" %}
 {% set version = "2.2.0" %}
 
 package:
-  name: user-agents
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/u/user-agents/user-agents-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: d36d25178db65308d1458c5fa4ab39c9b2619377010130329f3955e7626ead26
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
     - python
     - pip
+    - setuptools
+    - wheel
   run:
     - python
     - ua-parser >=0.10.0
@@ -24,10 +26,11 @@ requirements:
 test:
   imports:
     - user_agents
-  commands:
-    - pip check
   requires:
     - pip
+  commands:
+    - pip check
+    - python -m unittest discover
 
 about:
   home: https://github.com/selwin/python-user-agents
@@ -35,7 +38,13 @@ about:
   license_family: MIT
   license_file: LICENSE.txt
   summary: A library to identify devices (phones, tablets) and their capabilities by parsing (browser/HTTP) user agent strings
+  description: |
+    user_agents is a Python library that provides an easy way to identify/detect devices like mobile phones, tablets and their capabilities by parsing (browser/HTTP) user agent strings. The goal is to reliably detect whether:
+      - User agent is a mobile, tablet or PC based device.
+      - User agent has touch capabilities (has touch screen).
+    user_agents relies on the excellent ua-parser to do the actual parsing of the raw user agent string.
   dev_url: https://github.com/selwin/python-user-agents
+  doc_url: https://github.com/selwin/python-user-agents
 
 extra:
   recipe-maintainers:
